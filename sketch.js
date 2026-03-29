@@ -389,17 +389,23 @@ function startRecognition() {
   recognition.continuous = true;
   recognition.interimResults = true;
 
-  recognition.onresult = (event) => {
-    let lastResult = event.results[event.results.length - 1];
-    let transcript = lastResult[0].transcript.trim();
+recognition.onresult = (event) => {
+  let lastResult = event.results[event.results.length - 1];
+  let transcript = lastResult[0].transcript.trim();
 
-    if (lastResult.isFinal) {
-      addLine(transcript);
-      tempTranscript = "";
-    } else {
-      tempTranscript = transcript;
-    }
-  };
+  if (lastResult.isFinal) {
+    addLine(transcript);
+
+    // 🔥 Google Sheet 전송
+    let emotion = getEmotionFromWord(transcript);
+    let vol = mic.getLevel();
+    sendToSheet(transcript, emotion, vol);
+
+    tempTranscript = "";
+  } else {
+    tempTranscript = transcript;
+  }
+};
 
   //------------------------------------------------------------------
   // 🚀 핵심: 인식이 끝나면 자동 재시작
@@ -475,4 +481,23 @@ function resumeSystem() {
   startRecognition();
 
   console.log("▶ Resumed");
+}
+
+function sendToSheet(text, emotion, volume) {
+  const url = "https://script.google.com/macros/s/AKfycbw53lb7jMqy2IznctKcl567uqPyLUsqr9aaovBW49jwA9yeBN3-KLqUdJvgXuwyVcnjTg/exec"; // 배포한 Apps Script URL
+  const data = {
+    timestamp: new Date().toISOString(), // ISO 형식 타임스탬프
+    text: text,
+    emotion: emotion,
+    volume: volume
+  };
+
+  fetch(url, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" }
+  })
+  .then(res => res.json())
+  .then(res => console.log("Sheet response:", res))
+  .catch(err => console.error(err));
 }
