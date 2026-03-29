@@ -1,0 +1,11 @@
+/* 기본 여백 제거 */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: black; /* 배경이 검정이면 유지 */
+}
+
+/* 캔버스 설정 */
+canvas {
+  display: block;
+}
