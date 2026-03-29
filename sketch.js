@@ -1,9 +1,7 @@
 let mic;
 let recognition;
 let lines = [];
-let baseLineHeight = 25 * 10;
 let tempTranscript = "";
-let scrollOffset = 0;
 
 // 전역 선언
 let emotionColors = {};
@@ -18,12 +16,13 @@ let buttonSize = 40;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   textAlign(LEFT, CENTER);
-  background(255);
-  fill(0);
-  textSize(12);
-  // 초기 안내 메시지
-  text("▶ 클릭해서 마이크 + 음성인식 시작", width / 2 - 150, height / 2);
+  background(0);
+  
+  // 폰트 설정 (CSS의 font-family 이름과 정확히 일치해야 함)
   textFont("SchoolSafeUniverse");
+  fill(255);
+  textSize(16);
+  text("▶ 화면을 클릭하면 시작됩니다.", width / 2 - 100, height / 2);
 
   // 🎨 감정별 폰트 세트
   emotionFonts = {
@@ -57,6 +56,9 @@ function setup() {
 
 function draw() {
   background(0);
+  
+  // 매 프레임 기본 폰트 명시 (폰트 풀림 방지)
+  textFont("SchoolSafeUniverse");
 
   let topAreaHeight = height * 0.25;
   let bottomAreaHeight = height * 0.75;
@@ -64,7 +66,7 @@ function draw() {
   let totalHeight = calcTotalTextHeight() + paddingTop;
   maxScroll = max(0, totalHeight - bottomAreaHeight);
 
-  // 🔻 1️⃣ 자막 그리기
+  // 🔻 1️⃣ 저장된 자막 그리기
   push();
   translate(0, topAreaHeight - scrollY);
   let yOffset = paddingTop;
@@ -109,34 +111,47 @@ function draw() {
   }
   pop();
 
-  // 🔝 2️⃣ 마스크 영역
-  noStroke(); fill(0); rect(0, 0, width, topAreaHeight);
+  // 🔝 2️⃣ 위 1/4 마스크 영역 (실시간 텍스트 배경)
+  noStroke();
+  fill(0);
+  rect(0, 0, width, topAreaHeight);
 
-  // 🔝 3️⃣ 실시간 텍스트
+  // 🔝 3️⃣ 실시간 인식 텍스트 (항상 최상위)
   if (tempTranscript.length > 0 && mic) {
     let vol = mic.getLevel();
     let size = constrain(map(pow(vol * 15, 2), 0, 1, 20, 220), 20, 220) * 3;
-    textFont("SchoolSafeUniverse"); textSize(size); fill(180);
+    textFont("SchoolSafeUniverse");
+    textSize(size);
+    fill(180);
     text(tempTranscript, 50, topAreaHeight / 2);
   }
 
-  // 🎛 버튼 UI
-  let bx = width - 60; let by = height - 60;
-  fill(255, 40); noStroke(); ellipse(bx, by, buttonSize);
+  // 🎛 우측 하단 Pause / Play 버튼
+  let bx = width - 60;
+  let by = height - 60;
+  fill(255, 40);
+  noStroke();
+  ellipse(bx, by, buttonSize);
   fill(255);
-  if (isPaused) triangle(bx - 6, by - 8, bx - 6, by + 8, bx + 8, by);
-  else { rect(bx - 8, by - 8, 5, 16); rect(bx + 3, by - 8, 5, 16); }
+  if (isPaused) {
+    triangle(bx - 6, by - 8, bx - 6, by + 8, bx + 8, by);
+  } else {
+    rect(bx - 8, by - 8, 5, 16);
+    rect(bx + 3, by - 8, 5, 16);
+  }
 }
 
 function mousePressed() {
-  let bx = width - 60; let by = height - 60;
+  let bx = width - 60;
+  let by = height - 60;
   if (dist(mouseX, mouseY, bx, by) < buttonSize / 2) {
     if (isPaused) resumeSystem(); else pauseSystem();
     return;
   }
   if (!mic) {
     userStartAudio().then(() => {
-      mic = new p5.AudioIn(); mic.start();
+      mic = new p5.AudioIn();
+      mic.start();
       startRecognition();
     });
   }
@@ -147,9 +162,11 @@ function addLine(txt) {
   let vol = mic ? mic.getLevel() : 0;
   let baseSize = constrain(map(pow(vol * 15, 2), 0, 1, 20, 220), 20, 220) * 3;
 
-  let wordColors = {}; let wordFonts = {};
+  let wordColors = {};
+  let wordFonts = {};
   let words = txt.split(" ");
   let currentLineEmotion = null;
+
   for (let w of words) {
     currentLineEmotion = getEmotionFromWord(w);
     if (currentLineEmotion) break;
@@ -169,8 +186,13 @@ function addLine(txt) {
 
   for (let w of words) {
     let emo = getEmotionFromWord(w);
-    if (emo) { wordColors[w] = emotionColors[emo]; wordFonts[w] = random(emotionFonts[emo]); }
-    else { wordColors[w] = color(255); wordFonts[w] = "SchoolSafeUniverse"; }
+    if (emo) {
+      wordColors[w] = emotionColors[emo];
+      wordFonts[w] = random(emotionFonts[emo]);
+    } else {
+      wordColors[w] = color(255);
+      wordFonts[w] = "SchoolSafeUniverse";
+    }
   }
 
   lines.push({
@@ -216,8 +238,7 @@ function startRecognition() {
   recognition.interimResults = true;
 
   recognition.onstart = () => {
-    let indicator = document.getElementById('status-indicator');
-    if (indicator) { indicator.innerText = "REC ●"; indicator.style.color = "red"; }
+    console.log("🎤 Recording...");
   };
 
   recognition.onresult = (event) => {
@@ -232,8 +253,8 @@ function startRecognition() {
     }
   };
 
-  recognition.onend = () => { if (!isPaused) setTimeout(() => recognition.start(), 1000); };
-  recognition.onerror = (event) => { if (event.error !== 'aborted' && !isPaused) setTimeout(() => recognition.start(), 1000); };
+  recognition.onend = () => { if (!isPaused) setTimeout(() => { try { recognition.start(); } catch(e){} }, 1000); };
+  recognition.onerror = (event) => { if (event.error !== 'aborted' && !isPaused) setTimeout(() => { try { recognition.start(); } catch(e){} }, 1000); };
   recognition.start();
 }
 
@@ -241,23 +262,30 @@ function sendToSheet(text, emotion, volume) {
   const url = "https://script.google.com/macros/s/AKfycbw53lb7jMqy2IznctKcl567uqPyLUsqr9aaovBW49jwA9yeBN3-KLqUdJvgXuwyVcnjTg/exec";
   const data = { timestamp: new Date().toLocaleString('ko-KR'), text: text, emotion: emotion, volume: volume.toFixed(4) };
   fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify(data), headers: { "Content-Type": "application/json" } })
-    .then(() => console.log("✅ Sent:", text))
-    .catch(err => console.error("❌ Error:", err));
+    .then(() => console.log("✅ Archived:", text))
+    .catch(err => console.error("❌ Sync Error:", err));
 }
 
 function pauseSystem() {
   isPaused = true;
   if (recognition) { recognition.onend = null; recognition.stop(); }
   if (mic) mic.stop();
+  console.log("⏸ Paused");
 }
 
 function resumeSystem() {
-  isPaused = false; scrollY = 0;
+  isPaused = false;
+  scrollY = 0;
   if (mic) mic.start();
   startRecognition();
+  console.log("▶ Resumed");
 }
 
 function mouseWheel(event) {
   if (!isPaused) return;
   scrollY = constrain(scrollY - event.delta, 0, maxScroll);
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
