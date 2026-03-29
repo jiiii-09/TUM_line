@@ -190,8 +190,7 @@
 
   <script src="sketch.js"></script>
 
-  <script>
-    // 1. 본인의 Google Apps Script 웹 앱 URL을 입력하세요.
+    <script>
   const GAS_URL = "https://script.google.com/macros/s/AKfycbw53lb7jMqy2IznctKcl567uqPyLUsqr9aaovBW49jwA9yeBN3-KLqUdJvgXuwyVcnjTg/exec"; 
 
   const statusIndicator = document.getElementById('status-indicator');
@@ -205,20 +204,21 @@
     recognition.continuous = true;
     recognition.interimResults = false;
 
-    let isStarted = false; // 중복 실행 방지 플래그
+    let isActive = false; // 현재 실제로 동작 중인지 확인하는 플래그
 
-    const startRecognition = () => {
-      if (!isStarted) {
+    const safeStart = () => {
+      if (!isActive) {
         try {
           recognition.start();
         } catch (e) {
-          console.log("Recognition 이미 실행 중입니다.");
+          // 이미 시작된 경우 발생하는 에러 무시
+          console.log("실행 시도 중...");
         }
       }
     };
 
     recognition.onstart = () => {
-      isStarted = true;
+      isActive = true;
       console.log("Voice recording started...");
       statusIndicator.innerText = "REC ●";
       statusIndicator.style.color = "red";
@@ -232,7 +232,6 @@
 
         if (text.length > 0) {
           console.log(`Archiving: [${timestamp}] ${text}`);
-          
           fetch(GAS_URL, {
             method: "POST",
             mode: "no-cors", 
@@ -244,26 +243,40 @@
     };
 
     recognition.onend = () => {
-      isStarted = false;
-      console.log("Restarting recognition...");
-      // 0.1초 뒤 재시작 (안정성 확보)
-      setTimeout(() => { startRecognition(); }, 100);
+      isActive = false;
+      console.log("Recognition ended. Restarting in 1s...");
+      statusIndicator.innerText = "RECONNECTING...";
+      statusIndicator.style.color = "gray";
+      
+      // 에러 루프를 방지하기 위해 1초의 여유를 두고 재시작
+      setTimeout(() => {
+        if (!isActive) safeStart();
+      }, 1000);
     };
 
     recognition.onerror = (event) => {
+      // 'aborted' 에러는 무시해도 되지만, 콘솔이 지저분해지므로 로그만 남깁니다.
+      if (event.error === 'aborted') {
+        console.log("Recognition aborted (overlapping call).");
+        return; 
+      }
+      
       console.error("Recognition Error:", event.error);
+      isActive = false;
+      
       if (event.error === 'not-allowed') {
         statusIndicator.innerText = "마이크 권한 필요";
-        isStarted = false;
       }
     };
 
-    // 1. 페이지 로드 시 시도
-    window.addEventListener('load', startRecognition);
+    // 1. 페이지 로드 시 실행 시도
+    window.addEventListener('load', () => {
+      setTimeout(safeStart, 500); // 로드 직후 충돌 방지를 위해 0.5초 지연
+    });
 
-    // 2. 브라우저 정책 대응 (사용자 클릭 시 강제 재시작)
+    // 2. 사용자 클릭 시 (최초 1회만 동작)
     document.body.addEventListener('click', () => {
-      startRecognition();
+      safeStart();
     }, { once: true });
   }
 </script>
