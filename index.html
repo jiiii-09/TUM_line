@@ -192,73 +192,81 @@
 
   <script>
     // 1. 본인의 Google Apps Script 웹 앱 URL을 입력하세요.
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbw53lb7jMqy2IznctKcl567uqPyLUsqr9aaovBW49jwA9yeBN3-KLqUdJvgXuwyVcnjTg/exec"; 
+    <script>
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbw53lb7jMqy2IznctKcl567uqPyLUsqr9aaovBW49jwA9yeBN3-KLqUdJvgXuwyVcnjTg/exec"; 
 
-    const statusIndicator = document.getElementById('status-indicator');
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const statusIndicator = document.getElementById('status-indicator');
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    if (!SpeechRecognition) {
-      console.error("이 브라우저는 음성 인식을 지원하지 않습니다.");
-    } else {
-      const recognition = new SpeechRecognition();
-      recognition.lang = 'ko-KR';
-      recognition.continuous = true;   // 연속 인식 활성화
-      recognition.interimResults = false; // 최종 결과만 전송
+  if (!SpeechRecognition) {
+    statusIndicator.innerText = "브라우저 미지원";
+  } else {
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'ko-KR';
+    recognition.continuous = true;
+    recognition.interimResults = false;
 
-      // 인식 시작 시 상태 표시
-      recognition.onstart = () => {
-        console.log("Voice recording started...");
-        statusIndicator.innerText = "REC ●";
-      };
+    let isStarted = false; // 중복 실행 방지 플래그
 
-      // 인식 결과 발생 시 처리
-      recognition.onresult = (event) => {
-        const lastResult = event.results[event.results.length - 1];
-        if (lastResult.isFinal) {
-          const text = lastResult[0].transcript.trim();
-          const timestamp = new Date().toLocaleString('ko-KR');
-
-          if (text.length > 0) {
-            console.log(`Archiving: [${timestamp}] ${text}`);
-            
-            // 스프레드시트로 전송 (Background)
-            fetch(GAS_URL, {
-              method: "POST",
-              mode: "no-cors", 
-              body: JSON.stringify({ timestamp, text }),
-              headers: { "Content-Type": "application/json" }
-            }).catch(err => console.error("GAS Sync Error:", err));
-          }
+    const startRecognition = () => {
+      if (!isStarted) {
+        try {
+          recognition.start();
+        } catch (e) {
+          console.log("Recognition 이미 실행 중입니다.");
         }
-      };
+      }
+    };
 
-      // 💡 핵심: 음성 인식이 끊겼을 때 자동으로 다시 시작 (무한 루프)
-      recognition.onend = () => {
-        console.log("Restarting recognition...");
-        recognition.start(); 
-      };
+    recognition.onstart = () => {
+      isStarted = true;
+      console.log("Voice recording started...");
+      statusIndicator.innerText = "REC ●";
+      statusIndicator.style.color = "red";
+    };
 
-      // 에러 발생 시 처리
-      recognition.onerror = (event) => {
-        console.error("Recognition Error:", event.error);
-        if (event.error === 'not-allowed') {
-          statusIndicator.innerText = "마이크 권한 필요";
+    recognition.onresult = (event) => {
+      const lastResult = event.results[event.results.length - 1];
+      if (lastResult.isFinal) {
+        const text = lastResult[0].transcript.trim();
+        const timestamp = new Date().toLocaleString('ko-KR');
+
+        if (text.length > 0) {
+          console.log(`Archiving: [${timestamp}] ${text}`);
+          
+          fetch(GAS_URL, {
+            method: "POST",
+            mode: "no-cors", 
+            body: JSON.stringify({ timestamp, text }),
+            headers: { "Content-Type": "application/json" }
+          }).catch(err => console.error("GAS Sync Error:", err));
         }
-      };
+      }
+    };
 
-      // 2. 페이지 로드와 동시에 즉시 시작
-      // 브라우저 정책상 첫 클릭이 있어야 마이크가 작동할 수 있으므로, 
-      // 화면 아무 곳이나 한 번 클릭하면 시작되도록 안전장치를 둡니다.
-      window.addEventListener('load', () => {
-        recognition.start();
-      });
+    recognition.onend = () => {
+      isStarted = false;
+      console.log("Restarting recognition...");
+      // 0.1초 뒤 재시작 (안정성 확보)
+      setTimeout(() => { startRecognition(); }, 100);
+    };
 
-      // 브라우저의 '사용자 동작 후 오디오 시작' 정책 대응
-      document.body.addEventListener('click', () => {
-        recognition.start();
-        console.log("Recognition resumed by user interaction.");
-      }, { once: true });
-    }
-  </script>
+    recognition.onerror = (event) => {
+      console.error("Recognition Error:", event.error);
+      if (event.error === 'not-allowed') {
+        statusIndicator.innerText = "마이크 권한 필요";
+        isStarted = false;
+      }
+    };
+
+    // 1. 페이지 로드 시 시도
+    window.addEventListener('load', startRecognition);
+
+    // 2. 브라우저 정책 대응 (사용자 클릭 시 강제 재시작)
+    document.body.addEventListener('click', () => {
+      startRecognition();
+    }, { once: true });
+  }
+</script>
 </body>
 </html>
