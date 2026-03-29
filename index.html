@@ -181,104 +181,11 @@
   <!-- (선택) 별도 CSS 파일 -->
   <link rel="stylesheet" href="style.css" />
 
- <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/addons/p5.sound.min.js"></script>
 </head>
-
 <body>
-  <div id="status-indicator">System Active</div>
-
+  <div id="status-indicator">SYSTEM READY</div>
   <script src="sketch.js"></script>
-
-    <script>
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbw53lb7jMqy2IznctKcl567uqPyLUsqr9aaovBW49jwA9yeBN3-KLqUdJvgXuwyVcnjTg/exec"; 
-
-  const statusIndicator = document.getElementById('status-indicator');
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-  if (!SpeechRecognition) {
-    statusIndicator.innerText = "브라우저 미지원";
-  } else {
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'ko-KR';
-    recognition.continuous = true;
-    recognition.interimResults = false;
-
-    let isActive = false; // 현재 실제로 동작 중인지 확인하는 플래그
-
-    const safeStart = () => {
-      if (!isActive) {
-        try {
-          recognition.start();
-        } catch (e) {
-          // 이미 시작된 경우 발생하는 에러 무시
-          console.log("실행 시도 중...");
-        }
-      }
-    };
-
-    recognition.onstart = () => {
-      isActive = true;
-      console.log("Voice recording started...");
-      statusIndicator.innerText = "REC ●";
-      statusIndicator.style.color = "red";
-    };
-
-    recognition.onresult = (event) => {
-      const lastResult = event.results[event.results.length - 1];
-      if (lastResult.isFinal) {
-        const text = lastResult[0].transcript.trim();
-        const timestamp = new Date().toLocaleString('ko-KR');
-
-        if (text.length > 0) {
-          console.log(`Archiving: [${timestamp}] ${text}`);
-          fetch(GAS_URL, {
-            method: "POST",
-            mode: "no-cors", 
-            body: JSON.stringify({ timestamp, text }),
-            headers: { "Content-Type": "application/json" }
-          }).catch(err => console.error("GAS Sync Error:", err));
-        }
-      }
-    };
-
-    recognition.onend = () => {
-      isActive = false;
-      console.log("Recognition ended. Restarting in 1s...");
-      statusIndicator.innerText = "RECONNECTING...";
-      statusIndicator.style.color = "gray";
-      
-      // 에러 루프를 방지하기 위해 1초의 여유를 두고 재시작
-      setTimeout(() => {
-        if (!isActive) safeStart();
-      }, 1000);
-    };
-
-    recognition.onerror = (event) => {
-      // 'aborted' 에러는 무시해도 되지만, 콘솔이 지저분해지므로 로그만 남깁니다.
-      if (event.error === 'aborted') {
-        console.log("Recognition aborted (overlapping call).");
-        return; 
-      }
-      
-      console.error("Recognition Error:", event.error);
-      isActive = false;
-      
-      if (event.error === 'not-allowed') {
-        statusIndicator.innerText = "마이크 권한 필요";
-      }
-    };
-
-    // 1. 페이지 로드 시 실행 시도
-    window.addEventListener('load', () => {
-      setTimeout(safeStart, 500); // 로드 직후 충돌 방지를 위해 0.5초 지연
-    });
-
-    // 2. 사용자 클릭 시 (최초 1회만 동작)
-    document.body.addEventListener('click', () => {
-      safeStart();
-    }, { once: true });
-  }
-</script>
 </body>
 </html>
