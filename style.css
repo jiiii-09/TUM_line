@@ -1,11 +1,48 @@
-/* 기본 여백 제거 */
+/* 1. 웹 폰트 정의 (SchoolSafeUniverse 및 주요 감정 폰트) */
+@font-face {
+  font-family: 'SchoolSafeUniverse';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/HakgyoansimWoojuR.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 기쁨: HappinessSans */
+@font-face {
+  font-family: 'HappinessSans';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2205@1.0/Happiness-Sans-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* 슬픔: Diphylleia (구글 폰트에서 불러오므로 생략 가능하나 명시적 선언) */
+@import url('https://fonts.googleapis.com/css2?family=Diphylleia&display=swap');
+
+/* 2. 기본 레이아웃 설정 */
 html, body {
   margin: 0;
   padding: 0;
-  background: black; /* 배경이 검정이면 유지 */
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* 스크롤바 방지 */
+  background-color: black; /* 배경 검정 유지 */
+  
+  /* 폰트가 렌더링되기 전까지 시스템 폰트로 대기하다가 로드 즉시 교체 */
+  font-family: 'SchoolSafeUniverse', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* 캔버스 설정 */
+/* 3. p5.js 캔버스 설정 */
 canvas {
   display: block;
+  /* 캔버스 선택 방지 (모바일 등에서 의도치 않은 터치 이벤트 방지) */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* (선택 사항) 만약 HTML에 상태 표시나 텍스트 요소가 있다면 적용될 기본 스타일 */
+#default-text {
+  color: white;
+  font-family: 'SchoolSafeUniverse', sans-serif;
 }
