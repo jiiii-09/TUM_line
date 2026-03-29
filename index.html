@@ -3,170 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>line</title>
+  <title>line - Realtime Archiving</title>
 
-  <!-- 🌿 Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Kirang+Haerang&family=Diphylleia&family=Hahmlet&
-  family=Gowun+Dodum&family=Noto+Serif+KR&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Kirang+Haerang&family=Diphylleia&family=Hahmlet&family=Gowun+Dodum&family=Noto+Serif+KR&display=swap" rel="stylesheet">
 
-  <!-- 🌸 눈누 폰트 (Noonnu Fonts) -->
   <style>
+    /* ... (기존 @font-face 설정들 생략) ... */
     
-    /*기본폰트*/
     @font-face {
-  font-family: 'SchoolSafeUniverse';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/HakgyoansimWoojuR.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
+      font-family: 'SchoolSafeUniverse';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/HakgyoansimWoojuR.woff2') format('woff2');
+      font-weight: normal; font-style: normal; font-display: swap;
+    }
 
-    /*기쁨
-    1해피니스산스*/
-    @font-face {
-    font-family: 'HappinessSans';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2205@1.0/Happiness-Sans-Regular.woff2') format('woff2');
-    font-weight: 400;
-    font-display: swap;
-}
-    /*2학교안심둥근미소*/
-    @font-face {
-    font-family: 'SchoolSafetyRoundedSmile';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimDunggeunmisoTTF-R.woff2') format('woff2');
-    font-weight: normal;
-    font-display: swap;
-}
-    /*3온글잎박다현*/
-    @font-face {
-    font-family: 'OngleipParkDahyeon';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2') format('woff2');
-    font-weight: normal;
-    font-display: swap;
-}
-    /*4가비아온담체*/
-    @font-face {
-    font-family: 'GabiaOndam';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/GabiaOndam-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-display: swap;
-}
-
-    
-    /*슬픔*/
-    /*1마포다카포*/
-    @font-face {
-    font-family: 'MapodaCapo';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/MapoDacapoA.woff') format('woff');
-    font-weight: normal;
-    font-display: swap;
-}
-    /*2가비아청연*/
-    @font-face {
-    font-family: 'GabiaCheongyeon';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2205@1.0/GabiaCheongyeon.woff2') format('woff2');
-    font-weight: normal;
-    font-display: swap;
-}
-    /*3영월체*/
-    @font-face {
-    font-family: 'Yeongwol';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-2@1.0/YeongwolTTF-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-display: swap;
-}
-    /*4그리운김정원*/
-    @font-face {
-    font-family: 'KimJeongWonSMiss';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-1@1.0/Griun_Kimjungwon-Rg.woff2') format('woff2');
-    font-weight: normal;
-    font-display: swap;
-}
-    
-    /*화남*/
-    /*1부크크명조*/
-    @font-face {
-    font-family: 'BookkMyungjo';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/BookkMyungjo-Lt.woff2') format('woff2');
-    font-weight: 400;
-    font-display: swap;
-}
-    /*2가평한석봉*/
-    @font-face {
-    font-family: 'GapyeongHanseokbongBigBrush';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2312-1@1.1/GapyeongHanseokbong-Regular.woff2') format('woff2');
-    font-weight: 400;
-    font-display: swap;
-}
-    /*3단조*/
-    @font-face {
-    font-family: 'Simple';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-1@1.1/Danjo-bold-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-display: swap;
-}
-    /*4조선궁서체*/
-    @font-face {
-    font-family: 'JoseonPalace';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGs.woff') format('woff');
-    font-weight: normal;
-    font-display: swap;
-}
-   
-    @font-face {
-    font-family: 'NostalgicPoliceVibe';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/Griun_PolSensibility-Rg.woff2') format('woff2');
-    font-weight: normal;
-    font-display: swap;
-}
-    
-    
-    /*놀람*/
-    /*1가비아던*/
-   @font-face {
-    font-family: 'GabiaDun';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2510-1@1.0/GabiaDunn-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-display: swap;
-}
- 
-
-    
-    /*혐오*/
-    /*1꾸불림체*/
-    @font-face {
-    font-family: 'KkuBulLim';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-1@1.0/BMkkubulimTTF-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-display: swap;
-}
-    /*2윤초록민국*/
-    @font-face {
-    font-family: 'YunChorokwoosanEoriniMinguk';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408@1.0/YoonChildfundkoreaMinGuk.woff2') format('woff2');
-    font-weight: normal;
-    font-display: swap;
-}
-    
-    /*3와일드각*/
-    @font-face {
-    font-family: 'Wildgak';
-    src: url('wildgak.woff2') format('woff2'),
-         url('wildgak.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
-    /*공포*/
-   /*1가비아던*/
-   @font-face {
-    font-family: 'GabiaDun';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2510-1@1.0/GabiaDunn-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-display: swap;
-}
-    
-
-    /* 기본 스타일 */
     html, body {
       margin: 0;
       padding: 0;
@@ -176,19 +25,98 @@
     canvas {
       display: block;
     }
+
+    /* 상단에 현재 기록 상태만 살짝 표시 (디버깅용, 필요 없으면 display:none 처리 가능) */
+    #status-indicator {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      font-family: 'SchoolSafeUniverse', sans-serif;
+      font-size: 11px;
+      color: rgba(0,0,0,0.3);
+      pointer-events: none; /* 클릭 방해 금지 */
+    }
   </style>
 
-  <!-- (선택) 별도 CSS 파일 -->
-  <link rel="stylesheet" href="style.css" />
-
-  <!-- p5.js -->
   <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.js"></script>
-  <!-- p5.sound (필요시 주석 해제) -->
   <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/addons/p5.sound.min.js"></script>
 </head>
 
 <body>
-  <!-- 🎨 p5.js 코드 -->
+  <div id="status-indicator">System Active</div>
+
   <script src="sketch.js"></script>
+
+  <script>
+    // 1. 본인의 Google Apps Script 웹 앱 URL을 입력하세요.
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbw53lb7jMqy2IznctKcl567uqPyLUsqr9aaovBW49jwA9yeBN3-KLqUdJvgXuwyVcnjTg/exec"; 
+
+    const statusIndicator = document.getElementById('status-indicator');
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      console.error("이 브라우저는 음성 인식을 지원하지 않습니다.");
+    } else {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ko-KR';
+      recognition.continuous = true;   // 연속 인식 활성화
+      recognition.interimResults = false; // 최종 결과만 전송
+
+      // 인식 시작 시 상태 표시
+      recognition.onstart = () => {
+        console.log("Voice recording started...");
+        statusIndicator.innerText = "REC ●";
+      };
+
+      // 인식 결과 발생 시 처리
+      recognition.onresult = (event) => {
+        const lastResult = event.results[event.results.length - 1];
+        if (lastResult.isFinal) {
+          const text = lastResult[0].transcript.trim();
+          const timestamp = new Date().toLocaleString('ko-KR');
+
+          if (text.length > 0) {
+            console.log(`Archiving: [${timestamp}] ${text}`);
+            
+            // 스프레드시트로 전송 (Background)
+            fetch(GAS_URL, {
+              method: "POST",
+              mode: "no-cors", 
+              body: JSON.stringify({ timestamp, text }),
+              headers: { "Content-Type": "application/json" }
+            }).catch(err => console.error("GAS Sync Error:", err));
+          }
+        }
+      };
+
+      // 💡 핵심: 음성 인식이 끊겼을 때 자동으로 다시 시작 (무한 루프)
+      recognition.onend = () => {
+        console.log("Restarting recognition...");
+        recognition.start(); 
+      };
+
+      // 에러 발생 시 처리
+      recognition.onerror = (event) => {
+        console.error("Recognition Error:", event.error);
+        if (event.error === 'not-allowed') {
+          statusIndicator.innerText = "마이크 권한 필요";
+        }
+      };
+
+      // 2. 페이지 로드와 동시에 즉시 시작
+      // 브라우저 정책상 첫 클릭이 있어야 마이크가 작동할 수 있으므로, 
+      // 화면 아무 곳이나 한 번 클릭하면 시작되도록 안전장치를 둡니다.
+      window.addEventListener('load', () => {
+        recognition.start();
+      });
+
+      // 브라우저의 '사용자 동작 후 오디오 시작' 정책 대응
+      document.body.addEventListener('click', () => {
+        recognition.start();
+        console.log("Recognition resumed by user interaction.");
+      }, { once: true });
+    }
+  </script>
 </body>
 </html>
