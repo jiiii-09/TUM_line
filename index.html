@@ -1,45 +1,187 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>line - Realtime Archiving</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>line</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Kirang+Haerang&family=Diphylleia&family=Hahmlet&family=Gowun+Dodum&family=Noto+Serif+KR&display=swap" rel="stylesheet">
+  <!-- 🌿 Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Kirang+Haerang&family=Diphylleia&family=Hahmlet&
+  family=Gowun+Dodum&family=Noto+Serif+KR&display=swap" rel="stylesheet">
 
-  <style>
-    /* ... (기존 @font-face 설정들 생략) ... */
-    
-    @font-face {
-      font-family: 'SchoolSafeUniverse';
-      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/HakgyoansimWoojuR.woff2') format('woff2');
-      font-weight: normal; font-style: normal; font-display: swap;
-    }
+  <!-- 🌸 눈누 폰트 (Noonnu Fonts) -->
+  <style>
+    
+    /*기본폰트*/
+    @font-face {
+  font-family: 'SchoolSafeUniverse';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/HakgyoansimWoojuR.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background: #fffafc;
-    }
-    canvas {
-      display: block;
-    }
+    /*기쁨
+    1해피니스산스*/
+    @font-face {
+    font-family: 'HappinessSans';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2205@1.0/Happiness-Sans-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+}
+    /*2학교안심둥근미소*/
+    @font-face {
+    font-family: 'SchoolSafetyRoundedSmile';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimDunggeunmisoTTF-R.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+    /*3온글잎박다현*/
+    @font-face {
+    font-family: 'OngleipParkDahyeon';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+    /*4가비아온담체*/
+    @font-face {
+    font-family: 'GabiaOndam';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/GabiaOndam-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
 
-    /* 상단에 현재 기록 상태만 살짝 표시 (디버깅용, 필요 없으면 display:none 처리 가능) */
-    #status-indicator {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      z-index: 1000;
-      font-family: 'SchoolSafeUniverse', sans-serif;
-      font-size: 11px;
-      color: rgba(0,0,0,0.3);
-      pointer-events: none; /* 클릭 방해 금지 */
-    }
-  </style>
+    
+    /*슬픔*/
+    /*1마포다카포*/
+    @font-face {
+    font-family: 'MapodaCapo';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/MapoDacapoA.woff') format('woff');
+    font-weight: normal;
+    font-display: swap;
+}
+    /*2가비아청연*/
+    @font-face {
+    font-family: 'GabiaCheongyeon';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2205@1.0/GabiaCheongyeon.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+    /*3영월체*/
+    @font-face {
+    font-family: 'Yeongwol';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-2@1.0/YeongwolTTF-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+    /*4그리운김정원*/
+    @font-face {
+    font-family: 'KimJeongWonSMiss';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-1@1.0/Griun_Kimjungwon-Rg.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+    
+    /*화남*/
+    /*1부크크명조*/
+    @font-face {
+    font-family: 'BookkMyungjo';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/BookkMyungjo-Lt.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+}
+    /*2가평한석봉*/
+    @font-face {
+    font-family: 'GapyeongHanseokbongBigBrush';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2312-1@1.1/GapyeongHanseokbong-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+}
+    /*3단조*/
+    @font-face {
+    font-family: 'Simple';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-1@1.1/Danjo-bold-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+    /*4조선궁서체*/
+    @font-face {
+    font-family: 'JoseonPalace';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGs.woff') format('woff');
+    font-weight: normal;
+    font-display: swap;
+}
+   
+    @font-face {
+    font-family: 'NostalgicPoliceVibe';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/Griun_PolSensibility-Rg.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+    
+    
+    /*놀람*/
+    /*1가비아던*/
+   @font-face {
+    font-family: 'GabiaDun';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2510-1@1.0/GabiaDunn-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+ 
 
-  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.js"></script>
+    
+    /*혐오*/
+    /*1꾸불림체*/
+    @font-face {
+    font-family: 'KkuBulLim';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-1@1.0/BMkkubulimTTF-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+    /*2윤초록민국*/
+    @font-face {
+    font-family: 'YunChorokwoosanEoriniMinguk';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408@1.0/YoonChildfundkoreaMinGuk.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+    
+    /*3와일드각*/
+    @font-face {
+    font-family: 'Wildgak';
+    src: url('wildgak.woff2') format('woff2'),
+         url('wildgak.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+    /*공포*/
+   /*1가비아던*/
+   @font-face {
+    font-family: 'GabiaDun';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2510-1@1.0/GabiaDunn-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+    
+
+    /* 기본 스타일 */
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #fffafc;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+
+  <!-- (선택) 별도 CSS 파일 -->
+  <link rel="stylesheet" href="style.css" />
+
+ <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/addons/p5.sound.min.js"></script>
 </head>
 
